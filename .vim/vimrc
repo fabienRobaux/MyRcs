@@ -1,0 +1,501 @@
+
+" Fabien Robaux vimrc file
+"
+"
+" Maintainer:	Fabien Robaux
+" Last change:	28/11/2019
+"
+" To use it, copy it to
+"     for Unix and OS/2:  ~/.vimrc
+"	      for Amiga:  s:.vimrc
+"  for MS-DOS and Win32:  $VIM\_vimrc
+"	    for OpenVMS:  sys$login:.vimrc
+"
+" Helps are given along this file and at the end
+
+" When started as "evim", evim.vim will already have done these settings.
+if v:progname =~? "evim"
+  finish
+endif
+
+" Use Vim settings, rather than Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+set equalalways
+
+" base config
+set tabstop=4 shiftwidth=4 expandtab smartcase smarttab
+
+set splitright
+set splitbelow
+
+
+
+
+
+
+
+
+" Call pathogen (handle the differents plugins)
+call pathogen#infect()
+call pathogen#helptags()
+
+
+filetype plugin indent on
+syntax on
+
+" disable diffcar by defaut: F8 for 1 line F7 for all files
+"let g:DiffExpr = 0 -> does not work
+" compare all char for plugin diffchar.vim
+let g:DiffUnit='Word1'
+autocmd FileType tex let g:DiffUnit='Word1'
+autocmd FileType fortran let g:DiffUnit='Word1'
+autocmd FileType python let g:DiffUnit='Word1'
+
+
+
+
+
+" <leader>=\ is replaced by <leader>=,
+let mapleader="," 
+set timeout timeoutlen=1500
+
+" auto completion clang
+"let g:clang_library_path='/usr/lib/llvm-3.8/lib'
+" Set tags to look in the parent directory until found the .tag file:
+set tags=./.tags;/,.tags;/
+
+" if a $MAIN_DIR has been found, use that tags, and define a command:
+" :Tagupdate or :Tu such that its update the tag automatically
+if exists("$MAIN_DIR")
+	"echom 'Found main dir'
+	set tags=$MAIN_DIR/.tags
+	
+	" automatically update tags file
+	"au FileType {c,cpp,f,f90,py} au BufWritePost <buffer> silent ! [ -e tags ] &&
+    "\ ( awk -F'\t' '$2\!="%:gs/'/'\''/"{print}' tags ; ctags -f- '%:gs/'/'\''/' )
+    "\ | sort -t$'\t' -k1,1 -o tags.new && mv tags.new tags
+	command Tagupdate !(cd $MAIN_DIR; ctags -R -f .tags .) <CR>
+	nnoremap :Tu :Tagupdate
+endif
+
+" base command for YouCompleteMe (commands and so on
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1 "Not working ??
+let g:ycm_autoclose_preview_window_after_insertion = 1
+
+nnoremap <leader>gt :YcmCompleter GoTo<CR>
+nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+noremap <leader>vgt :vsplit \| YcmCompleter GoToDefinition<CR>
+command Ycmupd YcmForceCompileAndDiagnostics
+"%% is thus the path of the current file
+cabbr %% <C-R>=expand('%:p:h')<CR>
+cabbr %H <C-R>=expand('%:r:t') . ".H"<CR>
+cabbr %C <C-R>=expand('%:r:t') . ".C"<CR>
+
+
+
+
+
+function! GetDict()
+    let dir = expand('%:p:h')
+    echom dir
+    let fil=expand('<cword>')
+    let a = dir . '/system/' . fil  . 'Dict'
+    echom a
+    return a
+endfunction
+cabbr Dict <C-R>=GetDict()<CR>
+
+"function! FindfromName(p)
+    "set path=p/**
+
+    
+"" or let a=expand('<cword>')...
+
+
+
+
+" set Commands to switch prevbuffers
+nnoremap <C-n> :bnext <CR>
+"":redraw<CR>:ls<CR>
+nnoremap <C-p> :bprevious <CR>
+"":redraw<CR>:ls<CR>
+" set Command to find file
+" Package FufFinder
+nnoremap :Fb :FufBuffer <CR>
+" list file in same repertory
+nnoremap :Ff :FufFile <CR> 
+
+
+
+" package NerdTree
+"nmap <leader>t :NERDTreeToggle <CR>
+nmap <leader>t :NERDTreeFind 
+nmap <leader>tc :NERDTreeClose 
+let NERDTreeMapOpenVSplit ='s' " it is also the default but put there to remember, and difficult to change without conflict
+
+" when quiting a buffet:
+let NERDTreeQuitOnOpen = 1
+" when removing a file from nerd tree (m then d)
+let NERDTreeAutoDeleteBuffer = 1
+" cosmetic
+let NERDTreeMinimalUI = 0
+"let NERDTreeDirArrows = 1
+
+" help
+" when on a NerdTree type 
+" ? to get the help
+" p to go to parent
+" i horizontal split
+" s vertical split
+" I toogle hiddeno
+" m for the menu => possible to do basic operations, copy, rm new file and so
+" on...
+
+
+" Quit all buffers except current One 
+"nmap <leader>c :%bd<bar>e# <CR> to quit a window use <C-w>c
+
+" Airline tab bar for buffers
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
+"
+" next val plugin  Replace True-> False, and 0.1 -> 0.2, With <C-Up>
+nmap <silent> <unique> <C-Up> <Plug>nextvalInc
+nmap <silent> <unique> <C-Down> <Plug>nextvalDec
+
+
+	
+
+" prepare a replace with current word under cursor
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+" prepare a command for pattern with current word under cursor
+nnoremap <Leader>g :%g/\<<C-r><C-w>\>/
+
+
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file (restore to previous version)
+  set undofile		" keep an undo file (undo changes after closing)
+endif
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+
+" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+" let &guioptions = substitute(&guioptions, "t", "", "g")
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+
+" map to suppress current highlighting
+nmap <leader><space> :noh<CR>
+
+
+
+" colors
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+    syntax on
+    set hlsearch
+endif
+
+if  has("gui_running")
+    colorscheme desert
+else
+    "highlight Normal      ctermbg=NONE
+    "highlight NonText     ctermbg=NONE
+    "highlight EndOfBuffer ctermbg=NONE
+    "highlight Normal term=none cterm=none ctermfg=White
+    set term=screen-256color
+    set t_ut=
+
+    set background=dark
+
+    " Be sure to store your `<theme>.vim` files in ~/.vim/colors/
+    "colorscheme gruvbox
+endif
+
+
+
+function! Fortran_settings()
+    autocmd FileType fortran set ignorecase
+    autocmd FileType fortran let fortran_free_source=1
+    autocmd FileType fortran set tabstop=4 set shiftwidth=4 set expandtab
+    set foldmethod=marker
+endfunction
+
+
+function! Cpp_settings()
+		"autocmd FileType c set tabstop=4 shiftwidth=4 expandtab smartcase smarttab
+		"autocmd FileType cpp set tabstop=4 shiftwidth=4 expandtab smartcase smarttab
+		set tabstop=4 shiftwidth=4 expandtab smartcase smarttab
+		let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+		let g:ycm_server_use_vim_stdout = 1
+		let g:ycm_server_log_level = 'debug'
+
+        set foldmethod=syntax
+        
+        "same functions, used to remap useless now and probably not working.
+        " use :YcmGen %%
+        "    or :CCGen %%
+	"    or Gen %% to do both 
+        "    see in $HOME/.vim/bundle/YCM-Generator/plugin/ycm-generator.vim
+	"
+        "function! Gen(args)
+            "CCGenerateConfig args
+            "YcmGenerateConfig args
+        "endfunction 
+
+        "nnoremap :YcmGen :YcmGenerateConfig '--compiler clang-3.8 -e -f -v' %%
+endfunction
+
+
+function! Python_settings()
+    set smartcase
+    " noremap <leader>lo :w<CR>:silent !chmod +x %:p<CR>:silent !%:p  2>&1 \| tee ~/.vim/output<CR>:split ~/.vim/output<CR>:redraw!<CR>
+    noremap <leader>ll :w<CR>:silent !chmod +x %:p<CR>:!python3 % <CR>
+    set tabstop=4
+    set expandtab
+    let python_highlight_all = 1
+
+    set foldmethod=indent
+    set foldnestmax=2
+endfunction
+
+function! Tex_settings()
+    " This config works with pdflatex
+    " target format  <leader>ll try to reach this goal
+    let g:Tex_DefaultTargetFormat= 'pdf'
+    let g:tex_flavor='latex'
+
+    let g:Tex_FormatDependency= 'pdf'
+    "
+    " if dvi is needed in the process:
+    let g:Tex_CompileRule_dvi='latex -interaction=nonstopmode -file-line-error $*'
+
+    " if pdf is needed in the process:
+    let g:Tex_CompileRule_pdf='pdflatex --synctex=-1 -src-specials -interaction=nonstopmode -file-line-error $*'
+    "let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error $*'
+
+    " if you want to show pdf
+    let g:Tex_ViewRule_pdf='evince $*.pdf'
+
+    " auto goes to the error line on the log file
+    let g:Tex_GotoError=0
+
+    " for a biber use:
+    let g:Tex_BibtexFlavor = 'biber'
+    map <Leader>lb :<C-U>exec '!biber '.Tex_GetMainFileName(':p:t:r')<CR>
+    "let bibFileName = mainFileName_root.'.bcf'
+    "
+    " what to fold as environment
+    let g:Tex_FoldedEnvironments="verbatim,comment,eq,figure,table,tabular,tikzpicture,thebibliography,abstract,frame"
+    "
+    " spelling corrections
+    set spell
+    set spelllang=en_us
+    let g:tex_comment_nospell=1
+    "let g:Tex_MultipleCompileFormats= 'dvi,pdf'
+    "autocmd FileType tex let g:Tex_ViewRule_pdf="acroread '$*.pdf'"
+    
+    
+endfunction
+
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+   
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  "filetype plugin indent on
+
+  filetype plugin on
+  filetype indent on
+  autocmd BufRead,BufNewFile *.H set filetype=cpp
+  autocmd FileType fortran :call Fortran_settings()
+  autocmd FileType cpp :call Cpp_settings()
+  autocmd FileType c :call Cpp_settings()
+  autocmd FileType python :call Python_settings()
+  " OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
+  " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
+  " The following changes the default filetype back to 'tex':
+  autocmd FileType tex,latex,plaintex :call Tex_settings()
+
+
+
+
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+  set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+"
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+		  \ | wincmd p | diffthis
+endif
+
+if has('langmap') && exists('+langnoremap')
+  " Prevent that the langmap option applies to characters that result from a
+  " mapping.  If unset (default), this may break plugins (but it's backward
+  " compatible).
+  set langnoremap
+endif
+
+
+" Add optional packages.
+set linespace=2
+set nu
+set ic 
+noremap <leader>A! :Align !<CR>
+" The matchit plugin makes the % command work better, but it is not backwards
+" compatible.
+packadd matchit
+
+
+" Adjust the font sime. Use :LargerFont  or :SmallerFont, which call
+" :AdjustFontSize(+-1)
+set guifont=Monospace\ 8
+let s:pattern = '^\(.* \)\([1-9][0-9]*\)$'
+let s:minfontsize = 6
+let s:maxfontsize = 16
+function! AdjustFontSize(amount)
+  if has("gui_gtk2") && has("gui_running")
+    let fontname = substitute(&guifont, s:pattern, '\1', '')
+    let cursize = substitute(&guifont, s:pattern, '\2', '')
+    let newsize = cursize + a:amount
+    if (newsize >= s:minfontsize) && (newsize <= s:maxfontsize)
+      let newfont = fontname . newsize
+      let &guifont = newfont
+    endif
+  else
+    echoerr "You need to run the GTK2 version of Vim to use this function."
+  endif
+endfunction
+
+function! LargerFont()
+  call AdjustFontSize(1)
+endfunction
+command! LargerFont call LargerFont()
+function! SmallerFont()
+  call AdjustFontSize(-1)
+endfunction
+command! SmallerFont call SmallerFont()
+
+" How to, toolbox and help
+" 
+"
+"
+"
+"
+"
+"
+" Moving:
+" <C-o> to go back from where you come
+" And <C-i> to cancel <C-o>
+"
+"
+"
+" Moves and inside a given file
+"
+" 0 begining of the line
+" $ end of the line 
+" 
+" w move forward 1 word (to begining of the next)
+" e move forward 1 word (to end of the next)
+" <Maj><anything> same but backward
+"
+" 3<anything> do three time <anything>
+" 
+" G and of file 
+" gg begining of the file
+"
+" `. go to last edit
+"
+"
+" Windows (vertical or horizontal split [] are there to show options
+" Open:
+" :[v]split file or <C-w>v 
+" Close:
+" <C-w>c (close current)
+" <C-w>o (close all others)
+" <C-w>any arrow to switch cursor
+" <C-w>r to go right
+" <C-w>= to make split equal size
+"
+"
+"
+"
+"
+"To insert on many line (stars in next lines)
+"**** in normal mode <C-v> => to pass in visual bloc mode
+"**** chose where (with arrows)
+"**** <Maj-I> to pass in insert mode => type what you want => <CR> (=<Enter>)
+"
+" find and replace
+" to remove highlightling after search:
+" :noh  or:
+" <leader><space> (mapped in this file)
+" 
+" for example to replace abc[truc] with def(truc)
+" :%s/abc\[\(.*\)\]/def(\1)/g
+" abc math 
+" \[ and \] to be escape [ and ]
+" \( and \) to group (atom)
+" abc[truc]
+"
+"
+" to use the nerdcomment package
+" practical use: 
+" <leader>c$ add a comment here
+" <leader>cc comment selected block/ line if nothing is selected
+" <leader>c<space> comment/uncomment line (to the inversed state of 1st line)
+" <leader>cu uncomment line (toggle comment)
+" <leader>ci toggle comment
+" <leader>cA add a comment at the end of the line + insert mode
+" <leader>cm comment the block with minimal!
