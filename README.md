@@ -28,4 +28,12 @@ bash_aliases
 
 ~/.bash_aliases is very different, a lot of home made function and alias, with completion activated
 
+.ssh
+----
+only config which defines myBen and myJud
+on more recent version of ssh (>=7.3)
+you can replace the "ProxyCommand ..."
+with just
+ProxyJump myJud
+
 
