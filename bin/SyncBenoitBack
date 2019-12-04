@@ -1,0 +1,63 @@
+#!/bin/bash
+usage(){
+    echo import a directory myBen:$benoitHome/a/b/c inside $HOME/a/b/c.
+    echo replace everything but store old files with difference in c/rsyncback
+    echo usage:
+    echo   SyncBenoitBack args1 
+    echo example:
+    echo   SyncBenoitBack testRepertoryToSyncho/
+}
+benoitHome=/home/robaux
+
+if [[ "$#" -ne "1" ]]; then
+    echo 'illegal number of param'
+    usage
+    exit 1
+fi 
+
+input=$1    # input
+# basename a/b/c => c
+baseN=$(basename $input) #
+# realpath convert to global path, ie ./c => /home/robaux/foo/bar/c
+# dirname remove the last: /home/robaux/foo/bar/c => /home/robaux/foo/bar
+rep=$(dirname $(realpath $input))
+
+# convert /foo/bar/a/b/c from into ssrep=a/b/c (remove /home/robaux)
+ssrep=$(echo $rep | awk -F "/" '{$1=$2=$3=""; print $0 "\n"}') 
+ssrep=$(echo $ssrep |  awk -v OFS="/" '{$1=$1; print $0}') 
+
+# create the source parent directory and the source
+srcDir=$benoitHome/$ssrep
+src=$srcDir/$baseN
+
+if ssh myBen "[ -d $src  ]"; then
+    echo "$src is directory"
+    src=$src/
+    tgt=$rep/$baseN/
+    backupPos=$rep/$baseN/
+elif ssh myBen "[ -f $src ]"; then
+    echo "$src is file"
+    tgt=$rep/$baseN
+    backupPos=$rep/
+else
+    echo "$src does not exists on myBen"
+    usage
+    exit 1
+fi
+
+
+
+backupDir=rsync$(date +"%y-%m-%d-%H-%M-%S")
+echo copying: $src, with myBen:$tgt
+echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   myBen:$src $tgt # this is the only usefull command
+
+rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""  myBen:$src $tgt # this is the only usefull command
+
+a=$(ls -l $backupPos/$backupDir | wc -l)
+if [  "$a" -ne  "1" ]; then
+    echo -e "\e[31m\e[1mneeded backup:\e[0m" 
+    ls -l $backupPos/$backupDir
+else
+    rm -r  $backupPos/$backupDir
+fi
+

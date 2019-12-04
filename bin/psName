@@ -1,0 +1,5 @@
+#!/bin/bash
+# look inside the list of the jobs in that computer and print its PID and LOCATION psName mySolv => will look for mySolv*
+name=$1
+a=$(ps -ef | awk '$8 ~ /'$name'.*/ {"pwdx " $2  | getline a ;printf "%s\t",a ; print $8}')
+echo "$a"

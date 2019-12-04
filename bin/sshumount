@@ -1,0 +1,13 @@
+#!/bin/bash
+usage(){
+    echo usage:
+    echo    sshumount mountedDir
+    echo example:
+    echo    sshumount myBenHome
+}
+if [ "$#" -ne "1" ]; then 
+    echo "illegal number of parameters "
+    usage
+    exit 1
+fi
+fusermount -u $1 && rm -r $1

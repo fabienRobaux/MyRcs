@@ -1,0 +1,13 @@
+#!/bin/bash
+usage(){
+    echo usage:
+    echo   sshmount remotedir targetdir
+    echo example:
+    echo    ssmount myBen:/home/robaux/ ./myBenHome
+}
+if [ "$#" -ne "2" ]; then 
+    echo "illegal number of parameters "
+    usage
+    exit 1
+fi
+mkdir $2 && sshfs $1 $2

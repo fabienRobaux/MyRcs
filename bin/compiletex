@@ -1,0 +1,108 @@
+#!/bin/bash
+
+
+function usage(){
+printf "Utilisation du script :\n"
+printf "\t-e ARG                  : use evince to  ;\n"
+printf "\t-a ARG                  : use acroread to produce ;\n"
+print  "\t-n ARG		  : no view of pdf; \n"
+printf "\n"
+printf "\t-x ARG		  : use xelatex to compile; \n"
+printf "\t-p ARG                  : use pdflatex to compile  ;\n"
+printf "\t-m ARG                  : use latexmk to compile  ;\n"
+}
+
+lat='pdflatex'
+pdf='evince'
+
+options=$(getopt -o a,n,e,h,m,p,x  -l help -- "$@") 
+if [ $? -ne 0 ]; then
+	usage
+	exit 1
+fi
+set -- $options
+while true; do 
+	echo $1, $pdf, $lat
+              case $1 in
+                      -e)
+                              pdf='evince'
+                              shift 1;;
+                      -a)
+                              pdf='acroread'
+                              shift 1;;
+                      -n)
+                              pdf='None'
+                              shift 1;;
+                      -p)
+                              lat='pdflatex'
+                              shift 1;;
+                      -m)
+                              lat='latexmk'
+                              shift 1;;
+		      -x)
+			      lat='xelatex '
+			      shift 1;;
+		     h|--help)   usage 
+            	              shift
+			      exit 0 ;; # on décale la liste des options de 1 
+       	             --) # fin des options 
+                              shift # on décale la liste des options de 1 
+                              break ;; 
+                     *|\?)echo 'error'
+			    usage 
+                          shift
+			  exit 1;; # on décale la liste des options de 1 
+              esac
+done
+lat="$lat $opti"
+echo $lat
+echo $pdf
+
+
+err2=0
+for file in *.tex; do
+	fil=${file%%'.tex'}
+
+	echo "runing: textfot $lat $(ls $fil.tex)"
+ 	texfot $lat $(ls $fil.tex) 
+	err1=$(echo $?)
+	echo err1,$err1
+	if [ $err1 -eq 0 ]; then
+
+		echo 'compilation 1 done'
+		echo 
+		grep 'bibliography{' $file 
+		line=$(grep 'bibliography{' $file )
+		bib=$(echo $line | awk -F '{' '{printf $2}' )
+		bib=${bib%%'}'}
+		
+		if [ "$bib" != "" ];then
+			echo 'biblio found' $bib
+			bibtex $fil.aux
+			echo 'compilation bib done'
+			echo
+			texfot $lat $(ls $fil.tex) 
+			err1=$(echo $?)
+
+
+			echo 'compilation 2 done'
+			echo
+			if [ $err1 -eq 0 ]; then
+
+				if [ ! $pdf=='None' ]; then
+					$pdf $(ls $fil.pdf) 
+
+				fi
+			fi
+		else 
+			if [ ! $pdf=='None' ]; then
+				$pdf $(ls $fil.pdf) 
+			fi
+
+		fi
+	else
+		echo "compilation 1 error"
+	fi
+
+	
+done
