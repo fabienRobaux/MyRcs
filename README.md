@@ -31,9 +31,11 @@ bash_aliases
 .ssh
 ----
 only config which defines myBen and myJud
+
 on more recent version of ssh (>=7.3)
-you can replace the "ProxyCommand ..."
-with just
+
+you can replace the "ProxyCommand ..." with just
+
 ProxyJump myJud
 
 
