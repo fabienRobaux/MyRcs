@@ -5,12 +5,5 @@ usage(){
     echo example:
     echo   GoBenoit -X  # to go with graphic server
 }
-benoitHome=/home/robaux
-
-rep=$(pwd) 
-ssrep=$(echo $rep | awk -F "/" '{$1=$2=$3=""; print $0 "\n"}') 
-ssrep=$(echo $ssrep |  awk -v OFS="/" '{$1=$1; print $0}')
-dir=$benoitHome/$ssrep
-
-echo ssh -t $* myBen "cd $rep; bash"
-ssh -t  $* myBen "cd $rep; bash"
+source $HOME/bin/sshFunctions
+sshGoSameLoc $* myBen

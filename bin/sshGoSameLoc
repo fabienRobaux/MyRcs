@@ -1,0 +1,18 @@
+#!/bin/bash
+usage(){
+    echo usage:
+    echo   sshGoSameLoc args1 [ opts ]
+    echo example:
+    echo   sshGoSameLoc myBen -X  # to go to myBen with graphic server
+}
+source $HOME/bin/sshFunctions
+
+if [[ "$#" -ne "1" ]]; then
+    echo "illegal number of parameters (!=1)"
+    usage
+else
+    tgt=$(sshSameLoc $1)
+    echo going to $tgt on $1:
+    echo ssh -t ${@:2} $1 "cd $tgt; bash"
+    ssh -t  ${@:2} $1 "cd $tgt; bash"
+fi

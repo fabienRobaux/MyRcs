@@ -7,27 +7,23 @@ usage(){
     echo example:
     echo   SyncBenoitBack testRepertoryToSyncho/
 }
-benoitHome=/home/robaux
+source ./sshFunctions
+#benoitHome=/home/robaux
+serv=myBen
 
-rep=$(realpath $1)
-ssrep=$(echo $rep | awk -F "/" '{$1=$2=$3=""; print $0 "\n"}') 
-ssrep=$(echo $ssrep |  awk -v OFS="/" '{$1=$1; print $0}')
-dir=$benoitHome/$ssrep
+src=$(realpath $1)
+tgt=$(sshLoc $serv $1)
+
 if [ -d $1 ];then
-    dir=$dir/
+    tgt=$tgt/
 fi
 
 
-
-	#rep=$(pwd) 
-	#dir=$rep/$1
-	#echo rsync -e ssh -ravz $1 myBen:$dir
-	#rsync -e ssh -ravz $1 myBen:$dir
 
 if [[ "$#" -ne "1" ]]; then
     echo "illegal number of parameters (!=1)"
     usage
 else
-	rsync -e ssh -ravz $1 myBen:$dir
+	rsync -e ssh -bravz $1 $serv:$tgt
 fi
 

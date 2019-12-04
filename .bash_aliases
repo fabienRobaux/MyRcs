@@ -20,6 +20,7 @@ if [[ -d $localBin ]]; then
     export localBin
     export PATH=$PATH:$localBin
     source $localBin/completion.bash
+    source $localBin/sshFunctions
 else
     echo -e "\e[31m\e[1m$localBin does not exists \e[0m"
     echo maybe you dont want any, but this is the directory inwich I store my homemade functions

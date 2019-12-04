@@ -5,6 +5,7 @@ usage(){
     echo example:
     echo    ssmount myBen:/home/robaux/ ./myBenHome
 }
+source $HOME/bin/sshFunctions
 if [ "$#" -ne "2" ]; then 
     echo "illegal number of parameters "
     usage

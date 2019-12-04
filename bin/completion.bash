@@ -1,6 +1,7 @@
 #!/bin/bash
 #complete -W "now tomorrow never" sshmount
 source /usr/share/bash-completion/completions/sshfs
+source /usr/share/bash-completion/completions/ssh
 _sshfscomp()
 {
   #echo ""
@@ -32,3 +33,7 @@ _sshfscomp()
 }
 
 complete  -o nospace -F  _sshfscomp sshmount
+
+complete -F _ssh sshHome
+complete -F _ssh sshGoSameLoc
+complete -F _ssh sshSameLoc

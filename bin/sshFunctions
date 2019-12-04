@@ -1,0 +1,35 @@
+#!/bin/bash
+function sshLoc(){
+    # from 1 argument, a path, return the same path with the $HOME variable replaced by the $HOME of the server
+    if [[ "$#" -ne "2" ]]; then
+        echo "illegal number of parameters (!=2) sshLoc in sshFunctions"
+    else
+        rep=$(realpath $2)
+        tgt=$(sshHome $1)$(echo $rep | sed -e "s%$HOME%%g") # replace the local $HOME by the server $HOME in $2
+        echo $tgt
+    fi
+    
+}
+
+function sshSameLoc(){
+    if [[ "$#" -ne "1" ]]; then
+        echo "illegal number of parameters (!=1) sshSameLoc in sshFunctions"
+    else
+        echo $(sshLoc $1 $(pwd))
+    fi
+}
+
+function sshHome(){
+    # return the $HOME of a server (/home/robaux/)
+    usage(){
+        echo usage:
+        echo   tgtHome server
+        echo return the $HOME variable on a server
+    }
+    if [[ "$#" -ne "1" ]]; then
+        echo "illegal number of parameters (!=1) sshHome in sshFunctions"
+        usage
+    else
+        ssh $1 "echo $HOME"
+    fi
+}

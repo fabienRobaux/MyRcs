@@ -13,6 +13,10 @@
 "
 " Helps are given along this file and at the end
 
+
+" for "!command" to behave like "command" in the shell
+let $BASH_ENV = "~/.bash_aliases"
+
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish

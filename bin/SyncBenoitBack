@@ -7,57 +7,60 @@ usage(){
     echo example:
     echo   SyncBenoitBack testRepertoryToSyncho/
 }
-benoitHome=/home/robaux
+#benoitHome=/home/robaux
+source $HOME/bin/sshFunctions
+serv=myBen
 
 if [[ "$#" -ne "1" ]]; then
     echo 'illegal number of param'
     usage
     exit 1
 fi 
+echo $(sshLoc $serv $1)
 
 input=$1    # input
 # basename a/b/c => c
-baseN=$(basename $input) #
-# realpath convert to global path, ie ./c => /home/robaux/foo/bar/c
-# dirname remove the last: /home/robaux/foo/bar/c => /home/robaux/foo/bar
-rep=$(dirname $(realpath $input))
 
-# convert /foo/bar/a/b/c from into ssrep=a/b/c (remove /home/robaux)
-ssrep=$(echo $rep | awk -F "/" '{$1=$2=$3=""; print $0 "\n"}') 
-ssrep=$(echo $ssrep |  awk -v OFS="/" '{$1=$1; print $0}') 
+tgtRep=$(dirname $(realpath $input))
 
-# create the source parent directory and the source
-srcDir=$benoitHome/$ssrep
-src=$srcDir/$baseN
+baseN=$(basename $(realpath $input))
 
+src=$(sshLoc $serv $input)
+
+
+## create the source parent directory and the source
 if ssh myBen "[ -d $src  ]"; then
     echo "$src is directory"
     src=$src/
-    tgt=$rep/$baseN/
-    backupPos=$rep/$baseN/
+    tgt=$tgtRep/$baseN/
+    backupPos=$tgtRep/$baseN/
 elif ssh myBen "[ -f $src ]"; then
     echo "$src is file"
-    tgt=$rep/$baseN
-    backupPos=$rep/
+    tgt=$tgtRep/$baseN
+    backupPos=$tgtRep/
 else
-    echo "$src does not exists on myBen"
+    echo -e "\e[31m\e[1m $src does not exists on myBen \e[0m"
     usage
     exit 1
 fi
 
+echo $src
+echo $tgt
+echo $backupPos
 
 
 backupDir=rsync$(date +"%y-%m-%d-%H-%M-%S")
 echo copying: $src, with myBen:$tgt
-echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   myBen:$src $tgt # this is the only usefull command
+echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   $serv:$src $tgt # this is the only usefull command
 
-rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""  myBen:$src $tgt # this is the only usefull command
+rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""  $serv:$src $tgt # this is the only usefull command
 
 a=$(ls -l $backupPos/$backupDir | wc -l)
 if [  "$a" -ne  "1" ]; then
     echo -e "\e[31m\e[1mneeded backup:\e[0m" 
     ls -l $backupPos/$backupDir
 else
+    echo -e "\e[32m\e[1mbackup dir empty: was not needed, removing it\e[0m"
     rm -r  $backupPos/$backupDir
 fi
 
