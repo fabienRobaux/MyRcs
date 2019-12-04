@@ -1,4 +1,7 @@
 #!/bin/bash
+# autolook for any tex file inside the dir
+# and compile it with texfot (so great tool) according to option (for latexmk or xelatex or pdflatex), 
+# then open it if not -n
 
 
 function usage(){
@@ -39,9 +42,9 @@ while true; do
                       -m)
                               lat='latexmk'
                               shift 1;;
-		      -x)
-			      lat='xelatex '
-			      shift 1;;
+                      -x)
+                          lat='xelatex '
+                          shift 1;;
 		     h|--help)   usage 
             	              shift
 			      exit 0 ;; # on décale la liste des options de 1 
