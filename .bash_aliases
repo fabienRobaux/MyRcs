@@ -18,11 +18,16 @@ localBin=$HOME/bin
 
 if [[ -d $localBin ]]; then
     export localBin
-    export PATH=$PATH:$HOME/bin
+    export PATH=$PATH:$localBin
     source $localBin/completion.bash
 else
     echo -e "\e[31m\e[1m$localBin does not exists \e[0m"
     echo maybe you dont want any, but this is the directory inwich I store my homemade functions
+fi
+
+localgripBin=$HOME/.local/bin
+if [[ -d $localgripBin ]]; then
+    export PATH=$PATH:$localgripBin
 fi
 
 

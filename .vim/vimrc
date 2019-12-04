@@ -321,6 +321,16 @@ function! Tex_settings()
     
 endfunction
 
+function! Markdown_settings()
+    " from package https://github.com/JamshedVesuna/vim-markdown-preview
+    " to view in your browser the results of a markdown file, need 
+    "  - grip (pip install --user grip)
+    " installed 
+    "
+    nmap <leader>lv :call Vim_Markdown_Preview()<CR> 
+    let g:vim_markdown_preview_github=1
+endfunction
+
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -339,6 +349,7 @@ if has("autocmd")
   autocmd FileType cpp :call Cpp_settings()
   autocmd FileType c :call Cpp_settings()
   autocmd FileType python :call Python_settings()
+  autocmd FileType markdown,md :call Markdown_settings()
   " OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
   " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
   " The following changes the default filetype back to 'tex':

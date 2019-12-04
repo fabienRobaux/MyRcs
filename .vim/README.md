@@ -13,11 +13,11 @@ cd ~ && ln -s .vim/vimrc .vimrc
 
 packages:
 ---------
--pathogen to manage the packages. (pathogen lines in my vimrc)
+- pathogen to manage the packages. (pathogen lines in my vimrc)
      after, to install , you just need to
      * go in ~/.vim/bundle/
      * git clone github/thepackageIwantToAdd
-      *done
+     * done
 
 - Align (small one to align auto to "=" or to ";")
 
@@ -33,7 +33,7 @@ packages:
 
 - diffchar.vim (small one, ameliorate the difference tool of vim - you can highlight only words that differs or characters. Default vim is only lines)
 
-- nerdcommenter (REALLY COOL, you select ten lines, you press <leader>cc => commenter, with <leader>ci every comment is inverted)
+- nerdcommenter (REALLY COOL, you select ten lines, you press \<leader\>cc => commenter, with \<leader\>ci every comment is inverted)
 
 - nerdtree (Big one, but really cool, allows you to have a tree of the dir and subdirs)
 
