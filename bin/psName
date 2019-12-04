@@ -4,9 +4,14 @@
 function usage(){
     echo "usage:" 
     echo "  psName arg"
-    echo "returns all jobs in computer whos name contains 'arg'. Also returns its PID and LOCATION"
+    echo "returns all jobs in computer which name contains 'arg'. Also returns its PID and LOCATION"
 }
 
-name=$1
-a=$(ps -ef | awk '$8 ~ /'$name'.*/ {"pwdx " $2  | getline a ;printf "%s\t",a ; print $8}')
-echo "$a"
+if [[ "$#" -ne "1" ]]; then
+    echo "illegal number of parameters (!=1)"
+    usage
+else
+    name=$1
+    a=$(ps -ef | awk '$8 ~ /'$name'.*/ {"pwdx " $2  | getline a ;printf "%s\t",a ; print $8}')
+    echo "$a"
+fi
