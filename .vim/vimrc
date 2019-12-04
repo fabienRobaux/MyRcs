@@ -294,8 +294,8 @@ function! Tex_settings()
     let g:Tex_CompileRule_dvi='latex -interaction=nonstopmode -file-line-error $*'
 
     " if pdf is needed in the process:
-    let g:Tex_CompileRule_pdf='pdflatex --synctex=-1 -src-specials -interaction=nonstopmode -file-line-error $*'
-    "let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error $*'
+    "let g:Tex_CompileRule_pdf='pdflatex --synctex=-1 -src-specials -interaction=nonstopmode -file-line-error $*'
+    let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error $*'
 
     " if you want to show pdf
     let g:Tex_ViewRule_pdf='evince $*.pdf'
@@ -305,7 +305,7 @@ function! Tex_settings()
 
     " for a biber use:
     let g:Tex_BibtexFlavor = 'biber'
-    map <Leader>lb :<C-U>exec '!biber '.Tex_GetMainFileName(':p:t:r')<CR>
+    map <Leader>lb :<C-U>exec '!biber '.expand('%:p:h').'/'.Tex_GetMainFileName(':p:t:r').'.bcf'<CR>
     "let bibFileName = mainFileName_root.'.bcf'
     "
     " what to fold as environment
@@ -315,7 +315,7 @@ function! Tex_settings()
     set spell
     set spelllang=en_us
     let g:tex_comment_nospell=1
-    "let g:Tex_MultipleCompileFormats= 'dvi,pdf'
+    let g:Tex_MultipleCompileFormats= 'dvi,pdf'
     "autocmd FileType tex let g:Tex_ViewRule_pdf="acroread '$*.pdf'"
     
     

@@ -89,25 +89,14 @@ function gvwhich()
 }
 
 
-# look inside the list of the jobs in that computer and print its PID and LOCATION psName mySolv => will look for mySolv*
-function psName()
-{
-    name=$1
-    a=$(ps -ef | awk '$8 ~ /'$name'.*/ {"pwdx " $2  | getline a ;printf "%s\t",a ; print $8}')
-    #a=$(ps -ef | awk '$8 ~ /'$name'.*/  {print $8 }')
-
-    echo "$a"
-    #b=$(ps -ef | awk '$8 ~ /'$name'*/ {print $8}')
-    #echo $a
-    #for i in $a;do
-        #echo $b $(pwdx $i)
-    #done
-
-}
 
 
 
 
+export THESE_DIR=$HOME/These
+
+# Alias These
+alias cdthese="cd $THESE_DIR"
 
 
 
@@ -120,8 +109,6 @@ function psName()
 #PATH to where I store my generic toolbox in python
 export PYTHONPATH=$PYTHONPATH:$HOME/These/PythonUtils
 
-#PATH GLOBAL where I store my generic bash functions
-export PATH=$PATH:$HOME/bin
 #paraview
 #export PATH=$PATH:$HOME/ParaView-5.6.0-MPI-Linux-64bit/bin
 
@@ -159,53 +146,15 @@ alias srcBF='source $HOME/These/HPC/HPC_2DIBF/bashrc'
 alias srcHPC='srcIdCellHPC'
 
 
-# Alias These
-export THESE_DIR=$HOME/These
-alias cdthese="cd $THESE_DIR"
-# Alias to connect judas
-alias GoJuda='ssh robaux@judas.irphe.univ-mrs.fr'
 
-function GoBenoit(){
-	rep=$(pwd) 
-	ssrep=$(echo $rep | awk -F "These/" '{printf $2 "\n"}') 
-	dir=$ssrep/$1
-	echo $rep
-	ssh $1 robaux@147.94.56.171
-	echo $dir
-	cd $dir;
 
-	}
-export BenoitDell='robaux@147.94.56.171'
-export BenoitHome=$HOME/These/BenoitHome
-export perso='fabien@192.168.102.189'
-function mountBenoitHome() { 
-	sshfs robaux@147.94.56.171:/home/robaux/These $HOME/These/BenoitHome 
-	}
-function unmountBenoitHome() { 
-	fusermount -u $HOME/These/BenoitHome; }
+# source the completion file
+source /etc/bash_completion
+#PATH GLOBAL where I store my generic bash functions
+localBin=$HOME/bin
 
-function SyncBenoit() { 
-	rep=$(pwd) 
-	#ssrep=$(echo $rep | awk -F "These/" '{printf $2 "\n"}') 
-	dir=$rep/$1
-	echo synch: $dir, with robaux@147.94.56.171:$dir
-	#ssh robaux@147.94.56.171 "mkdir -p $dir"
-	rsync -e ssh -ravz $1 robaux@147.94.56.171:$dir
-	 }
-function SyncBenoitBack(){
-	rep=$(pwd) 
-	#ssrep=$(echo $rep | awk -F "These/" '{printf $2 "\n"}') 
-	dir=$rep/$1
-	echo synch: $dir, with robaux@147.94.56.171:$dir
-	ssh robaux@147.94.56.171 "mkdir -p /$dir"
-	rsync -e ssh -ravz  robaux@147.94.56.171:$dir $1
-	 }
-function SyncPersoBack(){
-	rep=$(pwd) 
-	ssrep=$(echo $rep | awk -F "These/" '{printf $2 "\n"}') 
-	dir=$ssrep/$1
-	ssh $perso "mkdir -p /home/fabien/These/$dir"
-	echo "rsync -e ssh -ravz  $perso:/home/fabien/These/$dir/* $1"
-	rsync -e ssh -ravz  $perso:/home/fabien/These/$dir/* $1
-	 }
-
+if [[ -d $localBin ]]; then
+    export localBin
+    export PATH=$PATH:$HOME/bin
+    source $localBin/completion.bash
+fi
