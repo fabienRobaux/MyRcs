@@ -55,6 +55,8 @@ alias sudall="sudap && sudag && sudaclean && sudap"
 
 # sort by time 
 alias lt='ll --sort=time -r' && complete -F _complete_alias lt
+alias lsd='ll -d' && complete -F _complete_alias lsd
+alias lld='ll -d' && complete -F _complete_alias lld
 
 
 #other shortcuts 

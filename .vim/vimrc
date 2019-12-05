@@ -273,7 +273,8 @@ function! Cpp_settings()
 		let g:ycm_server_use_vim_stdout = 1
 		let g:ycm_server_log_level = 'debug'
 
-        set foldmethod=syntax
+        set foldmethod=marker
+        "set foldmethod=syntax
         
         "same functions, used to remap useless now and probably not working.
         " use :YcmGen %%
