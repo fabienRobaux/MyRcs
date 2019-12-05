@@ -30,6 +30,6 @@ function sshHome(){
         echo "illegal number of parameters (!=1) sshHome in sshFunctions"
         usage
     else
-        ssh $1 "echo $HOME"
+        ssh $1 'echo $HOME'
     fi
 }

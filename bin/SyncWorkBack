@@ -1,0 +1,66 @@
+#!/bin/bash
+usage(){
+    echo import a directory $serv:$benoitHome/a/b/c inside $HOME/a/b/c.
+    echo replace everything but store old files with difference in c/rsyncback
+    echo usage:
+    echo   SyncBenoitBack args1 
+    echo example:
+    echo   SyncBenoitBack testRepertoryToSyncho/
+}
+#benoitHome=/home/robaux
+source $HOME/bin/sshFunctions
+serv=myWork
+
+if [[ "$#" -ne "1" ]]; then
+    echo 'illegal number of param'
+    usage
+    exit 1
+fi 
+echo $(sshLoc $serv $1)
+
+input=$1    # input
+# basename a/b/c => c
+
+tgtRep=$(dirname $(realpath $input))
+
+baseN=$(basename $(realpath $input))
+
+src=$(sshLoc $serv $input)
+
+
+## create the source parent directory and the source
+if ssh $serv "[ -d $src  ]"; then
+    echo "$src is directory"
+    src=$src/
+    tgt=$tgtRep/$baseN/
+    backupPos=$tgtRep/$baseN/
+elif ssh $serv "[ -f $src ]"; then
+    echo "$src is file"
+    tgt=$tgtRep/$baseN
+    backupPos=$tgtRep/
+else
+    echo -e "\e[31m\e[1m $src does not exists on $serv \e[0m"
+    usage
+    exit 1
+fi
+
+echo $src
+echo $tgt
+echo $backupPos
+
+
+backupDir=rsync$(date +"%y-%m-%d-%H-%M-%S")
+echo copying: $src, with $serv:$tgt
+echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   $serv:$src $tgt # this is the only usefull command
+
+rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""  $serv:$src $tgt # this is the only usefull command
+
+a=$(ls -l $backupPos/$backupDir | wc -l)
+if [  "$a" -ne  "1" ]; then
+    echo -e "\e[31m\e[1mneeded backup:\e[0m" 
+    ls -l $backupPos/$backupDir
+else
+    echo -e "\e[32m\e[1mbackup dir empty: was not needed, removing it\e[0m"
+    rm -r  $backupPos/$backupDir
+fi
+
