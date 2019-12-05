@@ -1,2 +1,29 @@
-#!/bin/bash
-echo "not coded yet (or get back from other computer)"
+#!/bin/sh 
+usage(){
+    echo "usage:"
+    echo "   pdfduplex fileRecto.pdf fileVerso.pdf fileOutput.pdf"
+    echo 'use a recto fileRecto.pdf and a verso fileVerso.pdf scan to return the the complete scan fileOutput.pdf'
+}
+
+if [[ "$#" -ne "3" ]]; then
+    echo "illegal number of parameters (!=2)"
+    usage
+    exit 1
+fi 
+
+pdftk $1 burst output Doc1_%04d.pdf
+pdftk $2 burst output Doc2_%04d.pdf
+l1=`ls Doc1_????.pdf | wc -l`
+l2=`ls Doc2_????.pdf | wc -l`
+echo "first document is of length $l1, second of length $l2"
+i=0
+if [ $a = $b ] ; then 
+ for i in `seq $l1`; do
+  charac="$charac Doc1_`printf "%04d" "$i"`.pdf Doc2_`printf "%04d" "$(($l1-$i+1))"`.pdf" 
+  echo $charac
+ done	
+ echo $charac
+ pdftk $charac cat output $3
+ rm Doc1_????.pdf Doc2_????.pdf
+fi
+
