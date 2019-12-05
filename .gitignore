@@ -1,20 +1,8 @@
-/*
-!.bash_aliases
-!.bashrc
-!.bash_completion
-!.vimrc
-!/.vim
 /.vim/*
-!/.vim/vimrc
-!bin
 /bin/*~
 /bin/*.swp
-!README.md
-
-!/.ssh/
-/.ssh/*
-!/.ssh/config
-!/.ssh/README.md
-!.gitignore
 
 
+
+*.un~
+*~
