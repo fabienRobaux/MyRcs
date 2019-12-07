@@ -10,6 +10,28 @@ else
     source $bashCompFile
 fi
 
+# 
+shopt -s expand_aliases
+
+
+# enable color support of ls and also add handy aliases
+# This comes from .bashrc, I've put them there to allow for vim to use it with !{command}
+# When is .bashrc I don't know why but it doesn't work
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+# some more ls aliases
+alias ll='ls -lhvF'
+alias la='ll -A'
+alias l='ls -CF'
+
 
 # source the completion file
 source /etc/bash_completion
@@ -55,8 +77,8 @@ alias sudall="sudap && sudag && sudaclean && sudap"
 
 # sort by time 
 alias lt='ll --sort=time -r' && complete -F _complete_alias lt
-alias lsd='ll -d' && complete -F _complete_alias lsd
-alias lld='ll -d' && complete -F _complete_alias lld
+alias lsd='ll -d --sort=time -r' && complete -F _complete_alias lsd
+alias lld='ll -d --sort=time -r' && complete -F _complete_alias lld
 
 
 #other shortcuts 
@@ -200,7 +222,6 @@ alias srcCFsHPC='source $HOME/These/HPC/HPC_2DFsPCorner/bashrc'
 alias srcIdCellHPC='source $HOME/These/HPC/HPC_2DIdCell/bashrc'
 alias srcBF='source $HOME/These/HPC/HPC_2DIBF/bashrc'
 alias srcHPC='srcIdCellHPC'
-
 
 
 
