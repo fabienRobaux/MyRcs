@@ -7,7 +7,7 @@ usage(){
 }
 source $HOME/bin/sshFunctions
 
-if [[ "$#" -le "1" ]]; then
+if [[ "$#" -lt "1" ]]; then
     echo "illegal number of parameters (!=1)"
     usage
 else
