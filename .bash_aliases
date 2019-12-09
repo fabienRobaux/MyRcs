@@ -144,6 +144,7 @@ PROMPT_COMMAND='echo -ne "\033]0;${HOSTNAME}: ${PWD}\007"'
 # instead of suppressing 
 alias rmt="trash"
 alias trm="trash"
+alias listtrash='echo   | restore-trash | sort -k2,3'
 
 # if the touchpad is activated, try to detect when its the palm of the hand so as not to click always anywhere
 # does not work well

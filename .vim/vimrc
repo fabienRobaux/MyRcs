@@ -304,43 +304,42 @@ function! Python_settings()
     "set foldnestmax=2
 endfunction
 
-function! Tex_settings()
-    " This config works with pdflatex
-    " target format  <leader>ll try to reach this goal
-    let g:Tex_DefaultTargetFormat= 'pdf'
-    let g:tex_flavor='latex'
 
-    let g:Tex_FormatDependency= 'pdf'
-    "
-    " if dvi is needed in the process:
-    let g:Tex_CompileRule_dvi='latex -interaction=nonstopmode -file-line-error $*'
+" ******* LATEX WITH VIM **************
+" package: "vim-latex"
+"
+"  **** COMPILING
+" when compiling, use <leader>, its objective will be to do a
+"   - g:Tex_DefaultTargetFormat file
+let g:Tex_DefaultTargetFormat='pdf'
 
-    " if pdf is needed in the process:
-    "let g:Tex_CompileRule_pdf='pdflatex --synctex=-1 -src-specials -interaction=nonstopmode -file-line-error $*'
-    let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error $*'
+" To do this file, we will need the dependency to create this:
+"   - g_TexFormatDependecy_pdf
+" For example if g_TexFormatDependecy_pdf='dvi,ps,pdf", he will compile the
+" dvi then the ps then the pdf
+let g:Tex_FormatDependency_pdf='pdf'
+let g:Tex_FormatDependency='pdf'
 
-    " if you want to show pdf
-    let g:Tex_ViewRule_pdf='evince $*.pdf'
+" For each on in Tex_FormatDependency, you will need an action: 
+let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error -synctex=1 $*'
 
-    " auto goes to the error line on the log file
-    let g:Tex_GotoError=0
+" Which format can be compiled multiple times (if ref or label are not ok
+" yet)?
+let g:Tex_MultipleCompileFormats= 'pdf'
 
-    " for a biber use:
-    let g:Tex_BibtexFlavor = 'biber'
+"" **** BIBLIO <leader>lb
+let g:Tex_BibtexFlavor = 'biber'
+
+"" **** VIEW IN PDF, Okular so that with <leader>ls => goes to the cursor"
+"" placement in the pdf
+"" For reverse seach in okular Setting=>Cinfigure Okular=>Editor=> Cutom Text Editor gvim --servername GVIM --remote +%l %f
+"" press <Schift> click, to open (or reload) gvim at the current location
+"let g:Tex_ViewRule_pdf='evince $*.pdf'
+let g:Tex_ViewRule_pdf='okular --unique'
+let g:Tex_GotoError=0
+
+function Tex_settings()
     map <Leader>lb :<C-U>exec '!biber '.expand('%:p:h').'/'.Tex_GetMainFileName(':p:t:r').'.bcf'<CR>
-    "let bibFileName = mainFileName_root.'.bcf'
-    "
-    " what to fold as environment
-    let g:Tex_FoldedEnvironments="verbatim,comment,eq,figure,table,tabular,tikzpicture,thebibliography,abstract,frame"
-    "
-    " spelling corrections
-    set spell
-    set spelllang=en_us
-    let g:tex_comment_nospell=1
-    let g:Tex_MultipleCompileFormats= 'dvi,pdf'
-    "autocmd FileType tex let g:Tex_ViewRule_pdf="acroread '$*.pdf'"
-    
-    
 endfunction
 
 function! Markdown_settings()
@@ -375,7 +374,9 @@ if has("autocmd")
   " OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
   " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
   " The following changes the default filetype back to 'tex':
-  autocmd FileType tex,latex,plaintex :call Tex_settings()
+  "
+  let g:tex_flavor='latex'
+  autocmd FileType tex,latex,plaintex call Tex_settings()
 
 
 
@@ -497,7 +498,7 @@ command! SmallerFont call SmallerFont()
 " <C-w>any arrow to switch cursor
 " <C-w>r to go right
 " <C-w>= to make split equal size
-"
+:map <C-w>vf :vertical wincmd f<CR>
 "
 "
 "
