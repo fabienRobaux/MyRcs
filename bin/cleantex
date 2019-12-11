@@ -1,3 +1,2 @@
 #!/bin/bash
-rm *~ *.aux *.bbl *.pdf *.blg *.log *.out *.bcf
-
+rm *~ *.aux *.bbl  *.blg *.log *.out *.bcf *.syntex.gz

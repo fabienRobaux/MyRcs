@@ -60,7 +60,13 @@ export LC_NUMERIC=C
 # open lecteurs par default 
 alias mp4="totem" && complete -F _complete_alias mp4
 alias avi="mp4"&& complete -F _complete_alias avi
-alias pdf="evince"&& complete -F _complete_alias pdf
+
+
+function pdf()
+{
+    command okular "$@" > /dev/null 2>&1 &
+} 
+
 alias png="eog"&& complete -F _complete_alias png
 alias jpg="png"&& complete -F _complete_alias jpg
 
@@ -116,10 +122,11 @@ alias sendmail='thunderbird -compose "preselectid=id4"'
 # id4 is the 4th id on thunderbird (ens-cachan for me)
 
 function senddoc () { 
-	echo attaching $* to a mail;
+	echo attaching "$@" to a mail;
 	att="attachment='"
-	for i in $*;do
-        fil=$(realpath $i)
+    echo "$@"
+	for i in "$@";do
+        fil=$(realpath "$i")
         echo $fil
         att=$att$fil,
 	done

@@ -480,3 +480,12 @@ _complete_alias() {
 #complete -F _complete_alias myalias2
 #complete -F _complete_alias myalias3
 
+_pdf_completor()
+{
+    # init bash-completion's stuff
+    _init_completion || return
+
+    # fill COMPREPLY using bash-completion's routine
+    _filedir '@(@(?(e)ps|?(E)PS|[pf]df|[PF]DF|dvi|DVI)?(.gz|.GZ|.bz2|.BZ2|.xz|.XZ)|cb[rz]|djv?(u)|gif|jp?(e)g|miff|tif?(f)|pn[gm]|p[bgp]m|bmp|xpm|ico|xwd|tga|pcx)'
+}
+complete -F _pdf_completor pdf

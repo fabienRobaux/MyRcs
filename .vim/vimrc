@@ -226,6 +226,7 @@ nmap <silent> <unique> <C-Down> <Plug>nextvalDec
 
 " prepare a replace with current word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+vnoremap <leader>s "hy:%s/<C-r>h//gc<left><left><left>
 " prepare a command for pattern with current word under cursor
 nnoremap <Leader>g :%g/\<<C-r><C-w>\>/
 
@@ -338,8 +339,9 @@ let g:Tex_BibtexFlavor = 'biber'
 let g:Tex_ViewRule_pdf='okular --unique'
 let g:Tex_GotoError=0
 
-function Tex_settings()
+function! Tex_settings()
     map <Leader>lb :<C-U>exec '!biber '.expand('%:p:h').'/'.Tex_GetMainFileName(':p:t:r').'.bcf'<CR>
+    setlocal spell
 endfunction
 
 function! Markdown_settings()
@@ -350,6 +352,11 @@ function! Markdown_settings()
     "
     nmap <leader>lv :call Vim_Markdown_Preview()<CR> 
     let g:vim_markdown_preview_github=1
+    setlocal spell
+endfunction
+
+function! Bash_settings()
+    nmap <leader>ll :!%
 endfunction
 
 
@@ -376,7 +383,8 @@ if has("autocmd")
   " The following changes the default filetype back to 'tex':
   "
   let g:tex_flavor='latex'
-  autocmd FileType tex,latex,plaintex call Tex_settings()
+  autocmd FileType tex,latex,plaintex :call Tex_settings()
+  autocmd FileType bash,sh,dash :call Bash_settings()
 
 
 
@@ -498,6 +506,8 @@ command! SmallerFont call SmallerFont()
 " <C-w>any arrow to switch cursor
 " <C-w>r to go right
 " <C-w>= to make split equal size
+" next command: to open a file under cursor in vertical split (instead of
+" horizontal with <C-w>f. gf opens it in the same window
 :map <C-w>vf :vertical wincmd f<CR>
 "
 "
@@ -530,3 +540,13 @@ command! SmallerFont call SmallerFont()
 " <leader>ci toggle comment
 " <leader>cA add a comment at the end of the line + insert mode
 " <leader>cm comment the block with minimal!
+"
+"
+"
+" ****SPELLCHECK https://www.ostechnix.com/use-spell-check-feature-vim-text-editor/
+" The lang can be set with :set spell spelllang=en_us, to move
+nmap zn ]s
+nmap zp [s
+" to view proposition z=
+" to accept <number><Enter>
+" to add an entry: zg ; to remove an added entry: zug
