@@ -7,12 +7,12 @@ usage(){
 }
 source $(dirname ${BASH_SOURCE[0]})/sshFunctions
 
-if [[ "$#" -ne "1" ]]; then
+if [[ "$#" -lt "1" ]]; then
     echo "illegal number of parameters (!=1)"
     usage
 else
     tgt=$(sshSameLoc $1)
     echo ll on $tgt on $1:
-    echo ssh -t ${@:2} $1 "ls -l $tgt"
-    ssh -t  ${@:2} $1 "ls -l $tgt"
+    echo ssh -t  $1 "cd  $tgt && ls -l ${@:2}"
+    ssh -t  $1 "cd  $tgt && ls -l ${@:2}"
 fi

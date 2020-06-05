@@ -3,15 +3,15 @@ usage(){
     echo import a directory myBen:$benoitHome/a/b/c inside $HOME/a/b/c.
     echo replace everything but store old files with difference in c/rsyncback
     echo usage:
-    echo   SyncBenoitBack args1 
+    echo   SyncBenoitBack args1 [otherRsyncOptions]
     echo example:
-    echo   SyncBenoitBack testRepertoryToSyncho/
+    echo   SyncBenoitBack testRepertoryToSyncho/ [--exclude="*avectrucdedans*"]
 }
 #benoitHome=/home/robaux
 source $HOME/bin/sshFunctions
 serv=myBen
 
-if [[ "$#" -ne "1" ]]; then
+if [[ "$#" -lt "1" ]]; then
     echo 'illegal number of param'
     usage
     exit 1
@@ -51,9 +51,9 @@ echo $backupPos
 
 backupDir=rsync$(date +"%y-%m-%d-%H-%M-%S")
 echo copying: $src, with myBen:$tgt
-echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   $serv:$src $tgt # this is the only usefull command
+echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix="" ${@:2}  $serv:$src $tgt # this is the only usefull command
 
-rsync -e ssh -rbaviz --backup-dir="$backupDir" --suffix=""  $serv:$src $tgt # this is the only usefull command
+rsync -e ssh -rbaviz --backup-dir="$backupDir" --suffix="" ${@:2}   $serv:$src $tgt # this is the only usefull command
 
 find $backupPos/$backupDir -type d -empty -delete
 
