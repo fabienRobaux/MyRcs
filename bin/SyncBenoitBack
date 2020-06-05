@@ -56,12 +56,13 @@ echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   $serv:$src $t
 rsync -e ssh -rbaviz --backup-dir="$backupDir" --suffix=""  $serv:$src $tgt # this is the only usefull command
 
 find $backupPos/$backupDir -type d -empty -delete
-a=$(ls -l $backupPos/$backupDir | wc -l)
-if [  "$a" -ne  "1" ]; then
+
+#a=$(ls -l $backupPos/$backupDir | wc -l)
+if [  -d $backupPos/$backupDir  ]; then
     echo -e "\e[31m\e[1mneeded backup:\e[0m" 
     ls -l $backupPos/$backupDir
 else
-    echo -e "\e[32m\e[1mbackup dir empty: was not needed, removing it\e[0m"
-    rm -r  $backupPos/$backupDir
+    echo -e "\e[32m\e[1mbackup dir was not needed\e[0m"
 fi
+
 

@@ -1,0 +1,36 @@
+#!/bin/bash
+usage(){
+    echo import a directory $benoitHome/a/b/c inside $HOME/a/b/c.
+    echo replace everything but store old files with difference in c/rsyncback
+    echo usage:
+    echo   SyncBenoitBack [args1 .. ]
+    echo example:
+    echo   SyncBenoitBack testRepertoryToSyncho/
+}
+source $(dirname ${BASH_SOURCE[0]})/sshFunctions
+#benoitHome=/home/robaux
+serv=/media/robaux/SAMSUNG/
+tgt=$serv$(echo $(realpath $1) | sed -e "s%$HOME%%g")
+
+src=$(realpath $1)
+#tgt=$(sshLoc $serv $1)
+
+if [ -d $1 ];then
+    tgt=$tgt/
+    mkdir -p $tgt
+    echo "mkdir -p" $tgt
+else
+    echo "mkdir -p" $(dirname $tgt)
+fi
+
+
+
+if [[ "$#" -ne "1" ]]; then
+    echo "illegal number of parameters (!=1)"
+    usage
+    exit 1
+else
+    echo $tgt
+	rsync -e ssh -bravz $1 $tgt
+fi
+

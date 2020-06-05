@@ -1,0 +1,16 @@
+#!/bin/bash
+usage(){
+    echo import a directory $benoitHome/a/b/c inside $HOME/a/b/c.
+    echo replace everything but store old files with difference in c/rsyncback
+    echo usage:
+    echo   SyncBenoitBack [args1 .. ]
+    echo example:
+    echo   SyncBenoitBack testRepertoryToSyncho/
+}
+source $(dirname ${BASH_SOURCE[0]})/sshFunctions
+#benoitHome=/home/robaux
+serv=/media/robaux/SAMSUNG/
+tgt=$serv$(echo $(realpath $1) | sed -e "s%$HOME%%g")
+
+echo "SamsungSync $1 && trash $1 && ln -s $tgt ${1%/}" # sync, && supress && link to with the / removed
+SamsungSync $1 && trash $1 && ln -s $tgt ${1%/} # sync, && supress && link to with the / removed
