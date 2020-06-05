@@ -31,6 +31,12 @@ endif
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" to be able to find recursively with :find
+set path+=**
+
+" to scroll when mutiple answer with tab on  a lower menu
+set wildmenu
+
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -99,12 +105,14 @@ filetype plugin indent on
 syntax on
 
 " disable diffcar by defaut: F8 for 1 line F7 for all files
-"let g:DiffExpr = 0 -> does not work
 " compare all char for plugin diffchar.vim
-let g:DiffUnit='Word1'
-autocmd FileType tex let g:DiffUnit='Word1'
-autocmd FileType fortran let g:DiffUnit='Word1'
-autocmd FileType python let g:DiffUnit='Word1'
+"let g:DiffUnit='Word1'
+"autocmd FileType tex let g:DiffUnit='Word1'
+"autocmd FileType fortran let g:DiffUnit='Word1'
+"autocmd FileType python let g:DiffUnit='Word1'
+"autocmd FileType foam, foam_256bC let g:DiffMaxLines=1000
+let g:DiffExpr="0"  " -> does not work
+let g:DiffMaxLines="10"  " -> does not work
 
 
 
@@ -117,21 +125,21 @@ set timeout timeoutlen=1500
 " auto completion clang
 "let g:clang_library_path='/usr/lib/llvm-3.8/lib'
 " Set tags to look in the parent directory until found the .tag file:
-set tags=./.tags;/,.tags;/
+set tags=./.tags;/,.tags,./.tags/etags,.tags/local/etags,.tags/foam/etags,.tags/etags;
 
 " if a $MAIN_DIR has been found, use that tags, and define a command:
 " :Tagupdate or :Tu such that its update the tag automatically
-if exists("$MAIN_DIR")
-	"echom 'Found main dir'
-	set tags=$MAIN_DIR/.tags
+"if exists("$MAIN_DIR")
+	""echom 'Found main dir'
+	"set tags=$MAIN_DIR/.tags
 	
-	" automatically update tags file
-	"au FileType {c,cpp,f,f90,py} au BufWritePost <buffer> silent ! [ -e tags ] &&
-    "\ ( awk -F'\t' '$2\!="%:gs/'/'\''/"{print}' tags ; ctags -f- '%:gs/'/'\''/' )
-    "\ | sort -t$'\t' -k1,1 -o tags.new && mv tags.new tags
-	command Tagupdate !(cd $MAIN_DIR; ctags -R -f .tags .) <CR>
-	nnoremap :Tu :Tagupdate
-endif
+	"" automatically update tags file
+	""au FileType {c,cpp,f,f90,py} au BufWritePost <buffer> silent ! [ -e tags ] &&
+    ""\ ( awk -F'\t' '$2\!="%:gs/'/'\''/"{print}' tags ; ctags -f- '%:gs/'/'\''/' )
+    ""\ | sort -t$'\t' -k1,1 -o tags.new && mv tags.new tags
+	"command Tagupdate !(cd $MAIN_DIR; ctags -R -f .tags .) <CR>
+	"nnoremap :Tu :Tagupdate
+"endif
 
 " base command for YouCompleteMe (commands and so on
 let g:ycm_add_preview_to_completeopt = 1
@@ -148,10 +156,24 @@ command Ycmupd YcmForceCompileAndDiagnostics
 cabbr %% <C-R>=expand('%:p:h')<CR>
 cabbr %H <C-R>=expand('%:r:t') . ".H"<CR>
 cabbr %C <C-R>=expand('%:r:t') . ".C"<CR>
+iabbr %t <C-R>=expand("%:t:r") <CR>
+cabbr $w <C-R>=expand("<cword>")<C-R>
 
 
+function! WrapSelect (front, back)
+    "puts characters around the selected text.
+	set paste
+	execute 'norm! gvc' . a:front . "\<C-R>\""  . a:back
+    "execute 'norm! gvc' . a:front . p  . a:back
+	set nopaste
+    nohl
+endfunction
+vnoremap <C-l> :<C-U>call WrapSelect('[',']')<cr>
+vnoremap <leader>dbg :<C-U>call WrapSelect("\tif(debug)\r\t{\r","\t}")<cr>
+"vnoremap <C-l> :<C-U>call WrapSelect('[',']')<cr>
 
-
+inoremap %II <esc>I
+inoremap %Info Info << indent<< <++> << endl;<++><esc>I
 
 function! GetDict()
     let dir = expand('%:p:h')
@@ -180,18 +202,20 @@ nnoremap <C-p> :bprevious <CR>
 " set Command to find file
 " Package FufFinder
 nnoremap :Fb :FufBuffer <CR>
+nnoremap <leader>fb :FufBuffer <CR>
 " list file in same repertory
 nnoremap :Ff :FufFile <CR> 
 
 
 
-" package NerdTree
+" package NerdTred
 "nmap <leader>t :NERDTreeToggle <CR>
+nmap <leader>T :NERDTree<CR>
 nmap <leader>t :NERDTreeFind 
 nmap <leader>tc :NERDTreeClose 
 let NERDTreeMapOpenVSplit ='s' " it is also the default but put there to remember, and difficult to change without conflict
 
-" when quiting a buffet:
+" when quiting a nerdTreeBuffer buffer:
 let NERDTreeQuitOnOpen = 1
 " when removing a file from nerd tree (m then d)
 let NERDTreeAutoDeleteBuffer = 1
@@ -212,6 +236,7 @@ let NERDTreeMinimalUI = 0
 
 " Quit all buffers except current One 
 "nmap <leader>c :%bd<bar>e# <CR> to quit a window use <C-w>c
+nmap <leader>bw :Vex<CR><C-w><right>:bd<CR>
 
 " Airline tab bar for buffers
 let g:airline#extensions#tabline#enabled = 1
@@ -267,6 +292,9 @@ endfunction
 
 
 function! Cpp_settings()
+        
+
+
 		"autocmd FileType c set tabstop=4 shiftwidth=4 expandtab smartcase smarttab
 		"autocmd FileType cpp set tabstop=4 shiftwidth=4 expandtab smartcase smarttab
 		set tabstop=4 shiftwidth=4 expandtab smartcase smarttab

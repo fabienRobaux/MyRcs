@@ -3,7 +3,7 @@ usage(){
     echo usage:
     echo   GoBenoit [args1 .. ]
     echo example:
-    echo   GoBenoit -X  # to go with graphic server
+    echo   GoBenoit -X  : go at same location with graphic server activated on the same directory "(./)"
 }
 source $HOME/bin/sshFunctions
 sshGoSameLoc $* myBen

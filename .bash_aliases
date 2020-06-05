@@ -14,6 +14,11 @@ fi
 shopt -s expand_aliases
 
 
+# use vim editing mode
+set -o vi
+
+
+
 # enable color support of ls and also add handy aliases
 # This comes from .bashrc, I've put them there to allow for vim to use it with !{command}
 # When is .bashrc I don't know why but it doesn't work
@@ -70,6 +75,13 @@ function pdf()
 alias png="eog"&& complete -F _complete_alias png
 alias jpg="png"&& complete -F _complete_alias jpg
 
+
+
+# clean memory 
+#alias clean_mem="sudo su; echo 1 > /proc/sys/vm/drop_caches"
+alias clean_mem='echo "echo 1 > /proc/sys/vm/drop_caches" | sudo sh'
+#alias clean_mem2="sudo su; echo 2 > /proc/sys/vm/drop_caches"
+
 #shortcuts sudo apt-get because it is too log to write sudo apt update (sudap is better) 
 # mostly use only sudall (update then upgrade then clean the udpate again)
 export appapt='aptitude' 
@@ -79,6 +91,8 @@ alias sudai="sudo $appapt install"
 alias sudag="sudo $appapt upgrade" 
 alias sudaclean="sudo apt autoremove; sudo $appapt autoclean" 
 alias sudall="sudap && sudag && sudaclean && sudap" 
+# NOTE: autoremove sometimes doesnt suppress old kernels because they are set as "manually installed", to modify that:
+# apt-mark showmanual | grep -E "linux-.*[0-9]" | grep -v "hwe" | xargs -r sudo apt-mark auto
 
 
 # sort by time 
@@ -100,6 +114,8 @@ alias ...="cd ../.."
 # recurcive copy and suppress
 alias rmr="rm -r" 
 alias cpr="cp -r"
+alias cpv="rsync -ah --info=progress2"
+
 
 # alias for counting lines  (for example test@test:~/$ cat .bash_aliases | wl )
 alias wl="wc -l"
@@ -231,5 +247,5 @@ alias srcIdCellHPC='source $HOME/These/HPC/HPC_2DIdCell/bashrc'
 alias srcBF='source $HOME/These/HPC/HPC_2DIBF/bashrc'
 alias srcHPC='srcIdCellHPC'
 
-
-
+eval "dircolors ~/.dircolors" >/dev/null
+PS1="\[\e]0; \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ \[\e]11;#290423\a\]"

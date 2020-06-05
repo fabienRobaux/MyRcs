@@ -7,7 +7,7 @@ usage(){
     echo example:
     echo   SyncBenoitBack testRepertoryToSyncho/
 }
-source ./sshFunctions
+source $(dirname ${BASH_SOURCE[0]})/sshFunctions
 #benoitHome=/home/robaux
 serv=myBen
 
@@ -17,6 +17,7 @@ tgt=$(sshLoc $serv $1)
 if [ -d $1 ];then
     tgt=$tgt/
 fi
+echo "source:" $src "target:"$tgt
 
 
 

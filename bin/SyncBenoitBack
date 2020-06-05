@@ -53,8 +53,9 @@ backupDir=rsync$(date +"%y-%m-%d-%H-%M-%S")
 echo copying: $src, with myBen:$tgt
 echo rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""   $serv:$src $tgt # this is the only usefull command
 
-rsync -e ssh -rbavizP --backup-dir="$backupDir" --suffix=""  $serv:$src $tgt # this is the only usefull command
+rsync -e ssh -rbaviz --backup-dir="$backupDir" --suffix=""  $serv:$src $tgt # this is the only usefull command
 
+find $backupPos/$backupDir -type d -empty -delete
 a=$(ls -l $backupPos/$backupDir | wc -l)
 if [  "$a" -ne  "1" ]; then
     echo -e "\e[31m\e[1mneeded backup:\e[0m" 

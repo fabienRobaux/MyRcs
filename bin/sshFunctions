@@ -33,3 +33,4 @@ function sshHome(){
         ssh $1 'echo $HOME'
     fi
 }
+
