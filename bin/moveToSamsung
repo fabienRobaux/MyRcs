@@ -12,5 +12,10 @@ source $(dirname ${BASH_SOURCE[0]})/sshFunctions
 serv=/media/robaux/SAMSUNG/
 tgt=$serv$(echo $(realpath $1) | sed -e "s%$HOME%%g")
 
-echo "SamsungSync $1 && trash $1 && ln -s $tgt ${1%/}" # sync, && supress && link to with the / removed
-SamsungSync $1 && trash $1 && ln -s $tgt ${1%/} # sync, && supress && link to with the / removed
+if [[ $(realpath $1) == *"SAMSUNG"* ]]; then
+    echo $1 "already on SAMSUNG"
+    exit 0
+else
+    echo "SamsungSync $1 && trash $1 && ln -s $tgt ${1%/}" # sync, && supress && link to with the / removed
+    SamsungSync $1 && trash $1 && ln -s $tgt ${1%/} # sync, && supress && link to with the / removed
+fi
