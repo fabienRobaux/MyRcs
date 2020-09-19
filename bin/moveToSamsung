@@ -17,5 +17,5 @@ if [[ $(realpath $1) == *"SAMSUNG"* ]]; then
     exit 0
 else
     echo "SamsungSync $1 && trash $1 && ln -s $tgt ${1%/}" # sync, && supress && link to with the / removed
-    SamsungSync $1 && trash $1 && ln -s $tgt ${1%/} # sync, && supress && link to with the / removed
+    SamsungSync $@ && trash $1 && ln -s $tgt ${1%/} # sync, && supress && link to with the / removed
 fi

@@ -25,12 +25,12 @@ fi
 
 
 
-if [[ "$#" -ne "1" ]]; then
+if [[ "$#" -lt "1" ]]; then
     echo "illegal number of parameters (!=1)"
     usage
     exit 1
 else
     echo $tgt
-	rsync -e ssh -bravz $1 $tgt
+	rsync -e ssh -bravzi --stats --progress $@  $tgt
 fi
 

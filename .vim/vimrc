@@ -286,7 +286,7 @@ endif
 function! Fortran_settings()
     autocmd FileType fortran set ignorecase
     autocmd FileType fortran let fortran_free_source=1
-    autocmd FileType fortran set tabstop=4 set shiftwidth=4 set expandtab
+    autocmd FileType fortran set tabstop=4  shiftwidth=4  expandtab
     set foldmethod=marker
 endfunction
 
@@ -573,6 +573,8 @@ command! SmallerFont call SmallerFont()
 "
 " ****SPELLCHECK https://www.ostechnix.com/use-spell-check-feature-vim-text-editor/
 " The lang can be set with :set spell spelllang=en_us, to move
+" The lang can be set with :set spell spelllang=en_us, to move
+set spell spelllang=en_us,fr
 nmap zn ]s
 nmap zp [s
 " to view proposition z=

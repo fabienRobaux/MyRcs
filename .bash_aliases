@@ -106,6 +106,7 @@ alias lld='ll -d --sort=time -r' && complete -F _complete_alias lld
 	
 # du is the size here (h for human reading, so size is said in terms of Ko Mo and Go)
 alias d='du -sch'
+function sortSize(){ du -sch $@ | sort --human-numeric-sort --reverse;}
 # df is the size of the current drive
 alias df='df -h'
 # cd 
