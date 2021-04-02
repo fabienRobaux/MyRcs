@@ -1,2 +1,2 @@
 #!/bin/bash
-rm *~ *.aux *.bbl  *.blg *.log *.out *.bcf *.syntex.gz *.dvi *.out.ps *run.xml *.toc
+rm *~ *.aux *.bbl  *.blg *.log *.out *.bcf *.syntex.gz *.dvi *.out.ps *run.xml *.toc *.synctex.gz

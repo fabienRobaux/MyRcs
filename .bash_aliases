@@ -128,6 +128,7 @@ alias grepi='grep  -iIrRn --exclude=*~* --exclude=*bak*'
 function findn () { find ./$2 -iname "*$1*";}
 # easy command to go where my article dir is
 alias cdarticle='cd ~/These/Presentation/articles/2018_09_article'
+export PHD='/home/robaux/These/2019_These/These/'
 # tail prints the end of a file with -f option it follows it 
 #when the file is updated (follow a logfile). tail -150 means 150 lines)
 alias tailf='tail -f '

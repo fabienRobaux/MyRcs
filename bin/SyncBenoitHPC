@@ -1,0 +1,2 @@
+#!/bin/bash
+SyncBenoit ./ --exclude="module/mod/**" --exclude="bin/**" --exclude=".**"

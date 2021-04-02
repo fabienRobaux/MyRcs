@@ -1,0 +1,23 @@
+#!/bin/bash
+usage(){
+    echo import a directory $benoitHome/a/b/c inside /media/robaux/laCie/a/b/c.
+    echo replace everything but store old files with difference in c/rsyncback
+    echo usage:
+    echo   SyncBenoitBack [args1 .. ]
+    echo example:
+    echo   SyncBenoitBack testRepertoryToSyncho/
+}
+source $(dirname ${BASH_SOURCE[0]})/sshFunctions
+serv=/media/robaux/LaCie/
+tgt=$serv$(echo $(realpath $1) | sed -e "s%$HOME%%g")
+
+if [[ $(realpath $1) == *"SAMSUNG"* ]]; then
+    echo $1 "already on SAMSUNG"
+    exit 0
+elif [[ $(realpath $1) == *"LaCie"* ]]; then
+    echo $1 "already on LaCie"
+    exit 0
+else
+    echo "LaCieSync $1 && trash $1 && ln -s $tgt ${1%/}" # sync, && supress && link to with the / removed
+    LaCieSync $@ && trash $1 && ln -s $tgt ${1%/} # sync, && supress && link to with the / removed
+fi

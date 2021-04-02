@@ -9,23 +9,28 @@ usage(){
 }
 source $(dirname ${BASH_SOURCE[0]})/sshFunctions
 #benoitHome=/home/robaux
-serv=myBen
+serv=/media/robaux/LaCie
+tgt=$serv$(echo $(realpath $1) | sed -e "s%$HOME%%g")
 
 src=$(realpath $1)
-tgt=$(sshLoc $serv $1)
+#tgt=$(sshLoc $serv $1)
 
-echo "source:" $src "target:"
 if [ -d $1 ];then
     tgt=$tgt/
+    mkdir -p $tgt
+    echo "mkdir -p" $tgt
+else
+    echo "mkdir -p" $(dirname $tgt)
 fi
 
 
 
-#if [[ "$#" -ne "1" ]]; then
-    #echo "illegal number of parameters (!=1)"
-    #usage
-#else
-echo 'command:rsync -e ssh -bravz $1 $serv:$tgt ${@:2}'
-rsync -e ssh -bravz $1 $serv:$tgt ${@:2}
-#fi
+if [[ "$#" -lt "1" ]]; then
+    echo "illegal number of parameters (!=1)"
+    usage
+    exit 1
+else
+    echo $tgt
+	rsync -e ssh -ravzi --stats --progress $@  $tgt
+fi
 

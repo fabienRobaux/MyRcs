@@ -350,14 +350,12 @@ let g:Tex_FormatDependency_pdf='pdf'
 let g:Tex_FormatDependency='pdf'
 
 " For each on in Tex_FormatDependency, you will need an action: 
-let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error -synctex=1 $*'
 
 " Which format can be compiled multiple times (if ref or label are not ok
 " yet)?
 let g:Tex_MultipleCompileFormats= 'pdf'
 
 "" **** BIBLIO <leader>lb
-let g:Tex_BibtexFlavor = 'biber'
 
 "" **** VIEW IN PDF, Okular so that with <leader>ls => goes to the cursor"
 "" placement in the pdf
@@ -368,7 +366,6 @@ let g:Tex_ViewRule_pdf='okular --unique'
 let g:Tex_GotoError=0
 
 function! Tex_settings()
-    map <Leader>lb :<C-U>exec '!biber '.expand('%:p:h').'/'.Tex_GetMainFileName(':p:t:r').'.bcf'<CR>
     setlocal spell
 endfunction
 
@@ -580,3 +577,45 @@ nmap zp [s
 " to view proposition z=
 " to accept <number><Enter>
 " to add an entry: zg ; to remove an added entry: zug
+"
+"
+"
+"
+function! SetBiber()
+    let g:Tex_BibtexFlavor = 'biber'
+    map <Leader>lb :<C-U>exec '!biber '.expand('%:p:h').'/'.Tex_GetMainFileName(':p:t:r').'.bcf' ' --output-safechars'<CR>
+endfunction
+
+function! SetBitex()
+    let g:Tex_BibtexFlavor = 'bibtex'
+    map <Leader>lb :<C-U>exec '!bibtex '.Tex_GetMainFileName(':p:t:r').'.aux'<CR>
+endfunction
+
+function! SetupEnvironment()
+  let local_vim = ".vimrc"
+  let l:path = expand('%:p:h')
+
+  if filereadable(l:path . "/" . local_vim ) 
+        exe ":so" . l:path  . "/" . local_vim 
+  else
+      if l:path =~ '/home/robaux/These/Presentation/20'
+
+            if &filetype == 'tex'
+                echo "compilation with pdflatex"
+                let g:Tex_CompileRule_pdf='pdflatex -interaction=nonstopmode -file-line-error -synctex=1 $*'
+                let g:Tex_FoldedEnvironments='verbatim,comment,eq,gather, align,figure,table,thebibliography, keywords,abstract,titlepage,frame,tikzpicture'
+                :call IMAP('EFR',"\\begin{frame}{<++>}\<CR><++>\<CR>\\end{frame}", 'tex')
+            endif
+
+      else
+        if &filetype == 'tex'
+            echo "compilation with xelatex"
+            let g:Tex_CompileRule_pdf='xelatex -interaction=nonstopmode -file-line-error -synctex=1 $*'
+        endif
+      endif
+      call SetBiber()
+  endif
+endfunction
+autocmd! BufReadPost,BufNewFile * call SetupEnvironment()
+
+
